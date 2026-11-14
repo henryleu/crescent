@@ -254,7 +254,11 @@ async fn issue_request(
 ) -> (@http.Response, Bytes) {
   let client = @http.Client("http://127.0.0.1:\{port}")
   defer client.close()
-  client.request(meth, path, extra_headers=headers.unwrap_or({}))
+  client.request(
+    meth,
+    path,
+    extra_headers=@httputil.to_async_headers(headers.unwrap_or({})),
+  )
   match body {
     Some(body) => client.write(body)
     None => ()
@@ -2522,7 +2526,7 @@ async test "serve preserves content-encoding for encoded static assets" {
       headers={ "Accept-Encoding": "gzip" },
     )
     assert_eq(head_response.code, 200)
-    guard head_response.headers
+    guard @httputil.from_async_headers(head_response.headers)
       is { "content-encoding": "gzip", "content-length": "7", .. } else {
       fail(
         "expected HEAD response to preserve content-encoding and content-length",
@@ -2770,13 +2774,15 @@ async test "serve binds by port and dispatches trace and connect routes" {
     assert_eq(trace_response.code, 200)
     inspect(@utf8.decode(trace_body) catch { _ => "" }, content="trace")
 
-    let (connect_response, connect_body) = issue_request(
-      port,
-      Connect,
-      "/connect",
-    )
+    // async 0.22 implements RFC 9110 tunnel semantics: a 2xx response to
+    // CONNECT establishes a tunnel and has no body, so the body must not be
+    // read (issue_request's read_all would fail). The 200 status still
+    // proves the CONNECT route dispatched to its handler.
+    let connect_client = @http.Client("http://127.0.0.1:\{port}")
+    defer connect_client.close()
+    connect_client.request(Connect, "/connect")
+    let connect_response = connect_client.end_request()
     assert_eq(connect_response.code, 200)
-    inspect(@utf8.decode(connect_body) catch { _ => "" }, content="connect")
   }) catch {
     SocketBindUnavailable => return
     err => raise err

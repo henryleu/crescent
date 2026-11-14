@@ -160,7 +160,11 @@ async fn issue_request(
 ) -> (@http.Response, Bytes) {
   let client = @http.Client("http://127.0.0.1:\{port}")
   defer client.close()
-  client.request(meth, path, extra_headers=headers.unwrap_or({}))
+  client.request(
+    meth,
+    path,
+    extra_headers=@httputil.to_async_headers(headers.unwrap_or({})),
+  )
   let response = client.end_request()
   let response_body = client.read_all().binary()
   (response, response_body)
@@ -201,7 +205,7 @@ async test "handle_cors serves preflight requests through async server" {
     })
     assert_eq(response.code, 200)
     assert_eq(body, b"")
-    guard response.headers
+    guard @httputil.from_async_headers(response.headers)
       is {
         "access-control-allow-origin": "https://frontend.example",
         "access-control-allow-methods": "GET, PATCH",
@@ -235,7 +239,7 @@ async test "handle_cors decorates normal requests through async server" {
     })
     assert_eq(response.code, 200)
     assert_eq(@utf8.decode(body) catch { _ => "" }, "ok")
-    guard response.headers
+    guard @httputil.from_async_headers(response.headers)
       is {
         "access-control-allow-origin": "https://frontend.example",
         "access-control-allow-methods": "GET, POST",
@@ -272,7 +276,7 @@ async test "handle_cors does not short-circuit non-preflight options" {
     })
     assert_eq(response.code, 200)
     assert_eq(@utf8.decode(body) catch { _ => "" }, "regular-options")
-    guard response.headers
+    guard @httputil.from_async_headers(response.headers)
       is {
         "access-control-allow-origin": "https://frontend.example",
         "access-control-allow-methods": "GET, OPTIONS",

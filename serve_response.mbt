@@ -143,6 +143,17 @@ test "append_cookie_headers with multiple cookies joins with CRLF Set-Cookie" {
 }
 
 ///|
+/// async 0.22 treats a 2xx response to CONNECT as a bodyless tunnel
+/// (RFC 9110): its `send_response` sets a zero-length body and any body
+/// write would fail. Like HEAD, such responses go through the raw path
+/// with headers only; crescent does not implement CONNECT tunneling.
+fn is_connect_success(request : @http.Request, response : HttpResponse) -> Bool {
+  request.meth == Connect &&
+  response.status_code.to_int() >= 200 &&
+  response.status_code.to_int() < 300
+}
+
+///|
 async fn send_raw_response_async(
   conn : @http.ServerConnection,
   response : HttpResponse,
@@ -216,7 +227,7 @@ async fn send_response_async(
   if !@httputil.has_header_case_insensitive(headers, "Date") {
     headers.set("Date", current_http_date())
   }
-  if request.meth == Head {
+  if request.meth == Head || is_connect_success(request, response) {
     send_raw_response_async(conn, response, headers, false)
     return
   }
@@ -227,7 +238,7 @@ async fn send_response_async(
   conn.send_response(
     response.status_code.to_int(),
     response.status_code.to_string(),
-    extra_headers=headers,
+    extra_headers=@httputil.to_async_headers(headers),
     cookies=response.cookies.values().map(to_async_http_cookie).to_array(),
   )
   if !response.raw_body.is_empty() {
@@ -250,14 +261,14 @@ async fn send_response_and_close_async(
     headers.set("Content-Length", response.raw_body.length().to_string())
   }
   headers.set("Connection", "close")
-  if request.meth == Head {
+  if request.meth == Head || is_connect_success(request, response) {
     send_raw_response_async(conn, response, headers, false)
     return
   }
   conn.send_response(
     response.status_code.to_int(),
     response.status_code.to_string(),
-    extra_headers=headers,
+    extra_headers=@httputil.to_async_headers(headers),
     cookies=response.cookies.values().map(to_async_http_cookie).to_array(),
   )
   if !response.raw_body.is_empty() {

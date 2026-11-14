@@ -1,6 +1,6 @@
 import {
-  "bobzhang/crescent/httputil",
-  "bobzhang/crescent/cookie",
+  "henryleu/crescent/httputil",
+  "henryleu/crescent/cookie",
   "moonbitlang/core/json",
   "moonbitlang/core/buffer",
   "moonbitlang/core/encoding/utf8",

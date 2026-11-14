@@ -1,5 +1,6 @@
 import {
-  "bobzhang/crescent",
+  "henryleu/crescent",
+  "henryleu/crescent/httputil",
   "moonbitlang/async",
   "moonbitlang/async/fs",
   "moonbitlang/async/http",

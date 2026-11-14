@@ -34,7 +34,7 @@ async fn wait_until_websocket_lifecycle_ready(port : Int32) -> Unit {
 }
 
 // Helpers below proxy to the public introspection API in
-// bobzhang/crescent/websocket. Pure-internal whitebox tests (drop-policy
+// henryleu/crescent/websocket. Pure-internal whitebox tests (drop-policy
 // enqueue, hub primitives, decode/chunk helpers) live in
 // websocket/runtime_wbtest.mbt where they have direct access to private
 // state.

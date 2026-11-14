@@ -1,7 +1,7 @@
 import {
-  "bobzhang/crescent/core",
-  "bobzhang/crescent/uri",
-  "bobzhang/crescent/httputil",
+  "henryleu/crescent/core",
+  "henryleu/crescent/uri",
+  "henryleu/crescent/httputil",
   "moonbitlang/async/http",
   "moonbitlang/core/encoding/utf8",
   "moonbitlang/core/test",

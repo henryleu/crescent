@@ -206,6 +206,25 @@ pub fn merge_headers_case_insensitive(
 }
 
 ///|
+/// crescent `Map[String, String]` -> async `@http.Headers`.
+pub fn to_async_headers(headers : Map[String, String]) -> @http.Headers {
+  let out : @http.Headers = Map([])
+  headers.each((k, v) => out.set(k, v))
+  out
+}
+
+///|
+/// async `@http.Headers` -> crescent `Map[String, String]`. Keys are
+/// lowercased: async 0.20 delivered parsed header names in lowercase, and
+/// crescent's plain-map lookups rely on that; `CaseInsensitiveString`
+/// preserves the original casing, so normalize explicitly.
+pub fn from_async_headers(headers : @http.Headers) -> Map[String, String] {
+  let out : Map[String, String] = Map([])
+  headers.each((k, v) => out.set(k.to_string().to_lower(), v))
+  out
+}
+
+///|
 /// Returns a shallow copy of the headers map.
 pub fn copy_headers(headers : Map[String, String]) -> Map[String, String] {
   let out : Map[String, String] = Map([])

@@ -32,11 +32,11 @@ needs, regardless of its domain logic:
 
 ## Install
 
-This package is included with `bobzhang/crescent`. Import it directly:
+This package is included with `henryleu/crescent`. Import it directly:
 
 ```
 import {
-  "bobzhang/crescent/middleware"
+  "henryleu/crescent/middleware"
   ...
 }
 ```

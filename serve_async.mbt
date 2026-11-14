@@ -76,8 +76,36 @@ test "request_method_to_string converts all HTTP methods" {
 /// per-key insertion.
 
 ///|
-fn copy_async_headers(headers : Map[String, String]) -> Map[String, String] {
-  Map::from_iter(headers.iter())
+fn copy_async_headers(headers : @http.Headers) -> Map[String, String] {
+  let out : Map[String, String] = Map([])
+  // Lowercase keys: async 0.20 delivered parsed header names in lowercase
+  // and crescent's plain-map lookups rely on that; CaseInsensitiveString
+  // preserves the original casing, so normalize explicitly.
+  headers.each((k, v) => out.set(k.to_string().to_lower(), v))
+  out
+}
+
+///|
+/// async 0.22 replacement for `header_contains_token_case_insensitive`:
+/// `@http.Headers` is already case-insensitive on header names, so only the
+/// token list needs normalizing.
+fn async_headers_contain_token(
+  headers : @http.Headers,
+  header_name : String,
+  token_name : String,
+) -> Bool {
+  let normalized_token_name = token_name.to_lower()
+  match headers.get(header_name) {
+    Some(value) => {
+      for token in value.split(",") {
+        if token.trim().to_lower() == normalized_token_name {
+          return true
+        }
+      }
+      false
+    }
+    None => false
+  }
 }
 
 ///|
@@ -147,13 +175,12 @@ test "header_contains_token_case_insensitive returns false for missing header" {
 
 ///|
 fn @http.Request::is_websocket_upgrade_request(request : Self) -> Bool {
-  let has_connection_upgrade = header_contains_token_case_insensitive(
+  let has_connection_upgrade = async_headers_contain_token(
     request.headers,
     "connection",
     "upgrade",
   )
-  let has_websocket_upgrade = match
-    @httputil.get_header_case_insensitive(request.headers, "upgrade") {
+  let has_websocket_upgrade = match request.headers.get("upgrade") {
     Some(value) => value.trim().to_lower() == "websocket"
     None => false
   }
@@ -198,14 +225,13 @@ test "is_websocket_upgrade_request returns false with empty headers" {
 
 ///|
 fn looks_like_websocket_handshake_request(request : @http.Request) -> Bool {
-  let websocket_upgrade_header = match
-    @httputil.get_header_case_insensitive(request.headers, "upgrade") {
+  let websocket_upgrade_header = match request.headers.get("upgrade") {
     Some(value) => value.trim().to_lower() == "websocket"
     None => false
   }
   for pair in request.headers {
     let (key, _) = pair
-    if key.to_lower().has_prefix("sec-websocket-") {
+    if key.to_string().to_lower().has_prefix("sec-websocket-") {
       return true
     }
   }
@@ -407,7 +433,7 @@ async fn App::handle_request(
   //     will parse the chunk trailer as a new request line).
   let has_content_length = request_content_length(request) is Some(len) &&
     len > 0
-  let is_chunked = header_contains_token_case_insensitive(
+  let is_chunked = async_headers_contain_token(
     request.headers,
     "transfer-encoding",
     "chunked",

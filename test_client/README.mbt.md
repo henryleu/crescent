@@ -32,11 +32,11 @@ This package provides:
 
 ## Install
 
-This package is included with `bobzhang/crescent`. Import it directly:
+This package is included with `henryleu/crescent`. Import it directly:
 
 ```
 import {
-  "bobzhang/crescent/test_client"
+  "henryleu/crescent/test_client"
   ...
 }
 ```
@@ -46,7 +46,7 @@ Because it exists solely for test code, most packages pull it in under a
 
 ```
 import {
-  "bobzhang/crescent/test_client",
+  "henryleu/crescent/test_client",
 } for "test"
 ```
 
@@ -157,11 +157,12 @@ raising, so test assertions stay simple.
 
 ```mbt check
 ///|
+#derive(FromJson, ToJson)
 #warnings("-unnecessary_annotation")
 struct Echo {
   name : String
   count : Int32
-} derive(FromJson, ToJson)
+}
 
 ///|
 async test "body_json decodes a typed struct" {

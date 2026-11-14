@@ -2,6 +2,16 @@
 
 A web framework for MoonBit. Type-safe and AI-agent friendly.
 
+> **Fork notice:** this is [henryleu](https://github.com/henryleu)'s fork of
+> [moonbit-community/crescent](https://github.com/moonbit-community/crescent)
+> (published upstream as `bobzhang/crescent`), ported to
+> `moonbitlang/async` 0.22.x and published on mooncakes.io as
+> `henryleu/crescent`. Upstream 0.11.2 targets async 0.20.3 and cannot
+> coexist with packages that require async 0.22 (e.g.
+> `moonbit-community/sqlite3`), because MoonBit unifies one version per
+> package workspace-wide. Switch back to `bobzhang/crescent` once upstream
+> ships an async 0.22 release.
+
 > Hard fork of [oboard/mocket](https://github.com/oboard/mocket) by
 > [oboard](https://github.com/oboard). [Credits](#credits) at the bottom.
 
@@ -13,7 +23,7 @@ A web framework for MoonBit. Type-safe and AI-agent friendly.
 ## Install
 
 ```bash
-moon add bobzhang/crescent
+moon add henryleu/crescent
 ```
 
 ## Hello World
@@ -45,25 +55,28 @@ compile to native (backend) and JS (frontend) — no code generation needed.
 
 ```moonbit nocheck
 ///|
+#derive(ToJson, FromJson)
 struct Todo {
   id : Int32
   title : String
   done : Bool
-} derive(ToJson, FromJson)
+}
 
 ///|
+#derive(FromJson)
 struct CreateTodo {
   title : String
-} derive(FromJson)
+}
 ```
 
 ```mbt check
 ///|
+#derive(ToJson, FromJson, Eq)
 #warnings("-unnecessary_annotation")
 struct JsonDemoUser {
   name : String
   age : Int32
-} derive(ToJson, FromJson, Eq)
+}
 
 ///|
 test "json_value sets content-type and serializes body" {
@@ -249,10 +262,11 @@ async test "security headers are present" {
 
 ```mbt check
 ///|
+#derive(FromJson, ToJson)
 #warnings("-unnecessary_annotation")
 struct TodoInput {
   title : String
-} derive(FromJson, ToJson)
+}
 
 ///|
 async test "typed handler auto-maps errors" {
@@ -331,17 +345,19 @@ This registers `GET /api/todos`, `GET /api/todos/:id`, `POST /api/todos`,
 
 ```mbt check
 ///|
+#derive(ToJson, FromJson, Eq, Debug)
 #warnings("-unnecessary_annotation")
 struct ResItem {
   id : Int32
   name : String
-} derive(ToJson, FromJson, Eq, Debug)
+}
 
 ///|
+#derive(FromJson, ToJson)
 #warnings("-unnecessary_annotation")
 struct CreateResItem {
   name : String
-} derive(FromJson, ToJson)
+}
 
 ///|
 async test "resource CRUD" {
@@ -719,7 +735,7 @@ For custom error responses, use `try_json`:
 
 ## Built-in Middleware
 
-Middleware implementations live in the `bobzhang/crescent/middleware` sub-package.
+Middleware implementations live in the `henryleu/crescent/middleware` sub-package.
 
 | Middleware | What it does |
 |-----------|-------------|
@@ -798,11 +814,12 @@ test "require_param raises on missing" {
 
 ```mbt check
 ///|
+#derive(FromJson)
 #warnings("-unnecessary_annotation")
 struct ReadmeCreateUser {
   name : String
   age : Int32
-} derive(FromJson)
+}
 
 ///|
 test "json parsing from request body" {
@@ -889,13 +906,13 @@ test "HttpMethod pattern matching" {
 ## Packages
 
 ```
-bobzhang/crescent             — Core: routing, middleware, serving, WebSocket
-bobzhang/crescent/httputil    — HTTP protocol: headers, dates, URL encoding
-bobzhang/crescent/cors        — CORS middleware
-bobzhang/crescent/fetch       — HTTP client
-bobzhang/crescent/static_file — Static file provider (filesystem)
-bobzhang/crescent/test_client — In-process test client (no network I/O)
-bobzhang/crescent/uri         — RFC 3986 URI parser
+henryleu/crescent             — Core: routing, middleware, serving, WebSocket
+henryleu/crescent/httputil    — HTTP protocol: headers, dates, URL encoding
+henryleu/crescent/cors        — CORS middleware
+henryleu/crescent/fetch       — HTTP client
+henryleu/crescent/static_file — Static file provider (filesystem)
+henryleu/crescent/test_client — In-process test client (no network I/O)
+henryleu/crescent/uri         — RFC 3986 URI parser
 ```
 
 ## Credits

@@ -281,7 +281,7 @@ pub async fn fetch(
     client.request(
       request_method_to_async(http_method),
       path,
-      extra_headers=req_headers,
+      extra_headers=@httputil.to_async_headers(req_headers),
     )
     match req_body {
       Some(body_bytes) => client.write(body_bytes)
@@ -296,7 +296,7 @@ pub async fn fetch(
     }
   HttpResponse(
     status_code=@core.StatusCode::from_int(response.code),
-    headers=@httputil.copy_headers(response.headers),
+    headers=@httputil.from_async_headers(response.headers),
     raw_body=response_body,
   )
 }

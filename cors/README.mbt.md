@@ -19,11 +19,11 @@ This package provides:
 
 ## Install
 
-This package is included with `bobzhang/crescent`. Import it directly:
+This package is included with `henryleu/crescent`. Import it directly:
 
 ```
 import {
-  "bobzhang/crescent/cors"
+  "henryleu/crescent/cors"
   ...
 }
 ```

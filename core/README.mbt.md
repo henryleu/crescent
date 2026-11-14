@@ -9,10 +9,10 @@ it safe to import from any context: server handlers, middleware, fetch clients,
 test assertions, or standalone scripts that construct HTTP values for
 serialization.
 
-The main `bobzhang/crescent` package re-exports everything in this package, so
+The main `henryleu/crescent` package re-exports everything in this package, so
 application code can use either `@crescent.HttpResponse` or `@core.HttpResponse`
 interchangeably. Sub-packages that want a lighter dependency (no App, no
-server runtime) can import `bobzhang/crescent/core` directly.
+server runtime) can import `henryleu/crescent/core` directly.
 
 This package provides:
 
@@ -32,12 +32,12 @@ This package provides:
 
 ## Install
 
-This package is included with `bobzhang/crescent`. To use it directly for a
+This package is included with `henryleu/crescent`. To use it directly for a
 lighter dependency:
 
 ```
 import {
-  "bobzhang/crescent/core"
+  "henryleu/crescent/core"
   ...
 }
 ```
@@ -139,11 +139,12 @@ test "read body as JSON" {
 
 ```mbt check
 ///|
+#derive(FromJson, Eq, Debug)
 #warnings("-unnecessary_annotation")
 struct CoreDocUser {
   name : String
   age : Int32
-} derive(FromJson, Eq, Debug)
+}
 
 ///|
 test "json shorthand parses typed value" {

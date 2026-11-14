@@ -1,6 +1,3 @@
 members = [
   ".",
-  "./examples",
-  "./benchmarks",
-  "./wasm_demo",
 ]

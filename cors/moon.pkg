@@ -4,8 +4,8 @@ import {
   "moonbitlang/async/os_error",
   "moonbitlang/async/socket",
   "moonbitlang/core/encoding/utf8",
-  "bobzhang/crescent",
-  "bobzhang/crescent/httputil",
+  "henryleu/crescent",
+  "henryleu/crescent/httputil",
 }
 
 supported_targets = "-all+native+wasm"

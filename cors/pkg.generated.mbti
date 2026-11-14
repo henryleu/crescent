@@ -1,8 +1,8 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "bobzhang/crescent/cors"
+package "henryleu/crescent/cors"
 
 import {
-  "bobzhang/crescent",
+  "henryleu/crescent",
 }
 
 // Values

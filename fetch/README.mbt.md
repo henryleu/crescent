@@ -53,11 +53,11 @@ optional `credentials`, optional `mode`) and return an
 
 ## Install
 
-This package is included with `bobzhang/crescent`. Import it directly:
+This package is included with `henryleu/crescent`. Import it directly:
 
 ```
 import {
-  "bobzhang/crescent/fetch"
+  "henryleu/crescent/fetch"
   ...
 }
 ```

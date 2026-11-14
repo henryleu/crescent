@@ -42,11 +42,11 @@ the app will respond to:
 
 ## Install
 
-This package is included with `bobzhang/crescent`. Import it directly:
+This package is included with `henryleu/crescent`. Import it directly:
 
 ```
 import {
-  "bobzhang/crescent/static_file"
+  "henryleu/crescent/static_file"
   ...
 }
 ```

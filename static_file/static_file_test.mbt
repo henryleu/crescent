@@ -54,7 +54,11 @@ async fn issue_request(
 ) -> (@http.Response, Bytes) {
   let client = @http.Client("http://127.0.0.1:\{port}")
   defer client.close()
-  client.request(meth, path, extra_headers=headers.unwrap_or({}))
+  client.request(
+    meth,
+    path,
+    extra_headers=@httputil.to_async_headers(headers.unwrap_or({})),
+  )
   let response = client.end_request()
   let response_body = client.read_all().binary()
   (response, response_body)

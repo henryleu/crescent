@@ -1,6 +1,7 @@
 import {
-  "bobzhang/crescent",
-  "bobzhang/crescent/fetch",
+  "henryleu/crescent",
+  "henryleu/crescent/fetch",
+  "henryleu/crescent/httputil",
   "moonbitlang/async",
   "moonbitlang/async/http",
   "moonbitlang/async/socket",

@@ -1,5 +1,9 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "bobzhang/crescent/httputil"
+package "henryleu/crescent/httputil"
+
+import {
+  "moonbitlang/async/http",
+}
 
 // Values
 pub fn append_token_case_insensitive(Map[String, String], String, String) -> Unit
@@ -11,6 +15,8 @@ pub fn first_multipart_value(Map[String, Array[MultipartFormValue]], String) -> 
 pub fn form_encode(Map[String, String]) -> String
 
 pub fn format_http_date(Int64) -> String
+
+pub fn from_async_headers(Map[@http.CaseInsensitiveString, String]) -> Map[String, String]
 
 pub fn get_header_case_insensitive(Map[String, String], String) -> String?
 
@@ -37,6 +43,8 @@ pub fn request_target_query_string(String) -> String?
 pub fn set_header_case_insensitive(Map[String, String], String, String) -> Unit
 
 pub fn set_missing_header_case_insensitive(Map[String, String], String, String) -> Unit
+
+pub fn to_async_headers(Map[String, String]) -> Map[@http.CaseInsensitiveString, String]
 
 pub fn url_decode(BytesView) -> String
 
